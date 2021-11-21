@@ -7,7 +7,7 @@ from adafruit_hid.keycode import Keycode
 keyboard = Keyboard(usb_hid.devices)
 
 # OPTIONS
-SLEEP_TIME = 0.15
+SLEEP_TIME = 0.5
 MOD_KEY = Keycode.WINDOWS
 
 # LAYOUT
@@ -29,109 +29,68 @@ MOD_KEY = Keycode.WINDOWS
 
 # Declaring buttons
 BTNS = [
-        [ board.GP7 ],
-        [ board.GP8 ],
-        [ board.GP9 ],
-        [ board.GP10 ],
-        [ board.GP11 ],
-        [ board.GP12 ],
-        [ board.GP13 ],
-        [ board.GP14 ],
-        [ board.GP15 ] 
+        digitalio.DigitalInOut(board.GP7), 
+        digitalio.DigitalInOut(board.GP8),
+        digitalio.DigitalInOut(board.GP9),
+        digitalio.DigitalInOut(board.GP10),
+        digitalio.DigitalInOut(board.GP11),
+        digitalio.DigitalInOut(board.GP12),
+        digitalio.DigitalInOut(board.GP13),
+        digitalio.DigitalInOut(board.GP14),
+        digitalio.DigitalInOut(board.GP15) 
+]
+
+KEYS = [
+    [MOD_KEY, Keycode.ONE],
 ]
 
 for BTN in BTNS:
-    BTN.append(digitalio.DigitalInOut(BTN[0]))
-    BTN[1].direction = digitalio.Direction.INPUT
-    BTN[1].pull = digitalio.Pull.DOWN
+    BTN.direction = digitalio.Direction.INPUT
+    BTN.pull = digitalio.Pull.DOWN
+
+def pressKeys(keys): 
+    for key in keys:
+        keyboard.press(key)
+    time.sleep(SLEEP_TIME)
+    for key in keys:
+        keyboard.release(key)
 
 while True:
 	# Check if button is pressed and if it is, to press the Macros
 
     # CHANGE TO WORKSPACE ONE
-    if BTNS[0][1].value:  
+    if BTNS[0].value:  
         print("BTN 0")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.ONE)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.ONE)
-"""
+        pressKeys([MOD_KEY, Keycode.ONE])
     # CHANGE TO WORKSPACE FOUR
-    if BTN2.value:  
-        print("BTN 2")
-        keyboard.press(MOD_KEY)
-        time.sleep(0.1)
-        keyboard.press(Keycode.FOUR)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.FOUR)
+    if BTNS[1].value:  
+        print("BTN 1")
+        pressKeys([MOD_KEY, Keycode.FOUR])
     # CHANGE TO WORKSPACE NINE
-    if BTN3.value:  
-        print("BTN 3")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.NINE)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.NINE)
+    if BTNS[2].value:  
+        print("BTN 2")
+        pressKeys([MOD_KEY, Keycode.NINE])
     # MOVE WINDOW TO SCRATCHPAD
-    if BTN4.value:  
-        print("BTN 4")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.LEFT_SHIFT)
-        keyboard.press(Keycode.A)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.LEFT_SHIFT)
-        keyboard.release(Keycode.A)
+    if BTNS[3].value:  
+        print("BTN 3")
+        pressKeys([MOD_KEY, Keycode.LEFT_SHIFT, Keycode.A])
     # MOVE WINDOW OUT OF SCRATCHPAD
-    if BTN5.value:  
+    if BTNS[4].value:  
+        print("BTN 4")
+        pressKeys([MOD_KEY, Keycode.LEFT_SHIFT, Keycode.S])
+    # WORKSPACE 10
+    if BTNS[5].value:  
         print("BTN 5")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.LEFT_SHIFT)
-        keyboard.press(Keycode.S)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.LEFT_SHIFT)
-        keyboard.release(Keycode.S)
-    # 
-    if BTN6.value:  
-        print("BTN 6")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.LEFT_SHIFT)
-        keyboard.press(Keycode.I)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.LEFT_SHIFT)
-        keyboard.release(Keycode.I)
+        pressKeys([MOD_KEY, Keycode.ZERO])
     # KEYBOARD LAYOUT BR
-    if BTN7.value:  
-        print("BTN 7")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.LEFT_SHIFT)
-        keyboard.press(Keycode.I)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.LEFT_SHIFT)
-        keyboard.release(Keycode.I)
+    if BTNS[6].value:  
+        print("BTN 6")
+        pressKeys([MOD_KEY, Keycode.LEFT_SHIFT, Keycode.I])
     # KEYBOARD LAYOUT US
-    if BTN8.value:  
+    if BTNS[7].value:  
+        print("BTN 7")
+        pressKeys([MOD_KEY, Keycode.LEFT_SHIFT, Keycode.O])
+    # WORKSPACE 2
+    if BTNS[8].value:  
         print("BTN 8")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.LEFT_SHIFT)
-        keyboard.press(Keycode.O)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.LEFT_SHIFT)
-        keyboard.release(Keycode.O)
-    # 
-    if BTN9.value:  
-        print("BTN 9")
-        keyboard.press(MOD_KEY)
-        keyboard.press(Keycode.LEFT_SHIFT)
-        keyboard.press(Keycode.I)
-        time.sleep(SLEEP_TIME)
-        keyboard.release(MOD_KEY)
-        keyboard.release(Keycode.LEFT_SHIFT)
-        keyboard.release(Keycode.I)
-"""
+        pressKeys([MOD_KEY, Keycode.TWO])
