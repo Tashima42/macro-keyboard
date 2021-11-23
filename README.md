@@ -3,6 +3,8 @@ Custom macro keyboard for usage with [i3WM]() built with [Raspberry Pi Pico]() a
 
 ---
 
+https://circuitpython.readthedocs.io/projects/hid/en/latest/api.html
+
 MOD = WINDOWS KEY
 
 ## Layout
