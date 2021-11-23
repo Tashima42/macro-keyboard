@@ -7,7 +7,7 @@ from adafruit_hid.keycode import Keycode
 keyboard = Keyboard(usb_hid.devices)
 
 # OPTIONS
-SLEEP_TIME = 0.5
+SLEEP_TIME = 0.3
 MOD_KEY = Keycode.WINDOWS
 
 # LAYOUT
@@ -18,7 +18,7 @@ MOD_KEY = Keycode.WINDOWS
 | WORSKPACE 1        | WORKSPACE 4            | WORKSPACE 9  |
 +--------------------+------------------------+--------------+
 | BTN3               | BTN4                   | BTN5         |
-| MOD + SHIFT + A    | MOD + SHIFT + S        | MOD + 0      |
+| MOD + 10           | MOD + SHIFT + a        | MOD + SHIFT + a        |
 | MOVE TO SCRATCHPAD | MOVE OUT OF SCRATCHPAD | WORKSPACE 10 |
 +--------------------+------------------------+--------------+
 | BTN6               | BTN7                   | BTN8         |
@@ -28,38 +28,53 @@ MOD_KEY = Keycode.WINDOWS
 """
 
 # Declaring buttons
-BTNS = {
+BTNS = [
         # CHANGE TO WORKSPACE ONE
-        digitalio.DigitalInOut(board.GP7): [MOD_KEY, Keycode.ONE],
-
+        {
+            "io": digitalio.DigitalInOut(board.GP7),
+            "keys": [MOD_KEY, Keycode.ONE]
+        },
         # CHANGE TO WORKSPACE FOUR
-        digitalio.DigitalInOut(board.GP8): [MOD_KEY, Keycode.FOUR],
-
+        {
+            "io": digitalio.DigitalInOut(board.GP8),
+            "keys": [MOD_KEY, Keycode.FOUR]
+        },
         # CHANGE TO WORKSPACE NINE
-        digitalio.DigitalInOut(board.GP9): [MOD_KEY, Keycode.NINE],
-
-        # MOVE WINDOW TO SCRATCHPAD
-        digitalio.DigitalInOut(board.GP10): [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.A],
-
-        # MOVE WINDOW OUT OF SCRATCHPAD
-        digitalio.DigitalInOut(board.GP11): [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.S],
-
+        {
+            "io": digitalio.DigitalInOut(board.GP9),
+            "keys": [MOD_KEY, Keycode.NINE]
+        },
         # WORKSPACE 10
-        digitalio.DigitalInOut(board.GP12): [MOD_KEY, Keycode.ZERO],
-
+        {
+            "io": digitalio.DigitalInOut(board.GP10),
+            "keys": [MOD_KEY, Keycode.ZERO]
+        },
         # KEYBOARD LAYOUT BR
-        digitalio.DigitalInOut(board.GP13): [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.I],
-
+        {
+            "io": digitalio.DigitalInOut(board.GP11),
+            "keys": [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.I]
+        },
         # KEYBOARD LAYOUT US
-        digitalio.DigitalInOut(board.GP14): [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.O],
-
-        # WORKSPACE 2
-        digitalio.DigitalInOut(board.GP15): [MOD_KEY, Keycode.TWO]
-}
-
-for BTN in BTNS.keys():
-    BTN.direction = digitalio.Direction.INPUT
-    BTN.pull = digitalio.Pull.DOWN
+        {
+            "io": digitalio.DigitalInOut(board.GP12),
+            "keys": [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.O]
+        },
+        # MOVE WINDOW TO SCRATCHPAD
+        {
+            "io": digitalio.DigitalInOut(board.GP13),
+            "keys": [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.A]
+        },
+        # MOVE WINDOW OUT OF SCRATCHPAD
+        {
+            "io": digitalio.DigitalInOut(board.GP14),
+            "keys": [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.S]
+        },
+        # TOGGLE FLOATING
+        {
+            "io": digitalio.DigitalInOut(board.GP15),
+            "keys": [MOD_KEY, Keycode.LEFT_SHIFT, Keycode.SPACE]
+        }
+]
 
 def pressKeys(keys): 
     for key in keys:
@@ -68,9 +83,12 @@ def pressKeys(keys):
     for key in keys:
         keyboard.release(key)
 
+for BTN in BTNS:
+    BTN["io"].direction = digitalio.Direction.INPUT
+    BTN["io"].pull = digitalio.Pull.DOWN
+
 while True:
 	# Check if button is pressed and if it is, to press the Macros
-
-    for bnt in BTNS.keys():
-        if bnt.value:
-            pressKeys(BTNS[bnt])
+    for BTN in BTNS:
+        if BTN["io"].value:
+            pressKeys(BTN["keys"])
